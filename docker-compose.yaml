@@ -9,8 +9,8 @@ services:
     image: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
-    volumes:
-      - db:/var/lib/mysql
+    # volumes:
+    #   - db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_PASSWORD=password
@@ -23,6 +23,6 @@ services:
       - 8082:80
     links:
       - db
-    volumes:
-      - nextcloud:/var/www/html
+    # volumes:
+    #   - nextcloud:/var/www/html
     restart: always
