@@ -26,7 +26,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ${NEXTCLOUD_PATH}:/var/www/html/data
+      - ${NEXTCLOUD_PATH}:/var/www/html/data:cached
     restart: always
 
 networks: 
