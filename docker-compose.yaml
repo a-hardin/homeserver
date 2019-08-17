@@ -25,8 +25,8 @@ services:
       - 8082:80
     networks:
       - app-network
-    # volumes:
-    #   - nextcloud:/var/www/html
+    volumes:
+      - ${NEXTCLOUD_PATH}:/var/www/html/data:cached
     restart: always
 
 networks: 
