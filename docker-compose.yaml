@@ -26,7 +26,7 @@ services:
     networks:
       - app-network
     volumes:
-      - data:/var/www/html/data:cached
+      - ./data:/var/www/html/data:cached
     restart: always
 
 networks: 
