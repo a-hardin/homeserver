@@ -37,8 +37,8 @@ echo "*********************"
 echo "*********************"
 echo "Setup a static IP"
 echo "*********************"
-
-
+sudo cp /var/www/homeserver/system/01-network-manager-all.yaml /etc/netplan/01-network-manager-all.yaml
+sudo netplan apply
 
 echo "*********************"
 echo "start docker container"
