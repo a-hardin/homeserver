@@ -10,7 +10,7 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    enp0s3:
+    enp1s0:
       dhcp4: no
       addresses: [192.168.0.201/24]
       gateway4: 192.168.0.1
