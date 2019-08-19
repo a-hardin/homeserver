@@ -5,7 +5,7 @@ echo "Installing packages"
 echo "*********************"
 
 sudo apt-get update
-sudo apt-get install git nano composer
+sudo apt-get install git nano composer htop
 sudo apt install docker.io
 
 echo "*********************"
@@ -31,7 +31,7 @@ git clone https://github.com/a-hardin/homeserver.git
 echo "*********************"
 echo "Restart docker containers on reboot"
 echo "*********************"
-(crontab -l 2>/dev/null; echo "@reboot /var/www/homeserver/docker/reboot.sh") | crontab -
+(crontab -l 2>/dev/null; echo "@reboot /var/www/homeserver/system/reboot.sh") | crontab -
 
 
 echo "*********************"
