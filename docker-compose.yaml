@@ -21,6 +21,7 @@ services:
 
   app:
     image: nextcloud
+    container_name: nextcloud
     ports:
       - 8082:80
     networks:
@@ -28,6 +29,27 @@ services:
     volumes:
       - ./nextcloud:/var/www/html/data:cached
     restart: always
+
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    ports:
+      - 8083:80
+    networks:
+      - app-network
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      # - UMASK_SET=022 #optional
+    volumes:
+      - ./plex/config:/config
+      - ./plex/daddy:/daddy
+      - ./plex/mommy:/mommy
+      - ./plex/shiloh:/shiloh
+      - ./plex/movies:/movies
+      # - /path for transcoding:/transcode
+    restart: unless-stopped
 
 networks: 
   app-network:
