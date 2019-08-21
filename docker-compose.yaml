@@ -46,10 +46,9 @@ services:
       # - UMASK_SET=022 #optional
     volumes:
       - ./plex/config:/config
-      - ./plex/daddy:/daddy
       - ./plex/mommy:/mommy
-      - ./plex/shiloh:/shiloh
       - /media/external_1TB/Plex/Movies:/movies
+      - /media/external_1TB/Plex/Daddy:/daddy
       # - /media/<externalpath>:/<path>
       # - /path for transcoding:/transcode
     restart: unless-stopped
