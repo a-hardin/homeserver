@@ -49,6 +49,7 @@ services:
       - ./plex/mommy:/mommy
       - /media/external_1TB/Plex/Movies:/movies
       - /media/external_1TB/Plex/Daddy:/daddy
+      - /media/external_1TB/Plex/music:/music
       # - /media/<externalpath>:/<path>
       # - /path for transcoding:/transcode
     restart: unless-stopped
