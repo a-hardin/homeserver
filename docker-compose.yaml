@@ -36,8 +36,9 @@ services:
     container_name: plex
     ports:
       - 32400:32400
-    networks:
-      - app-network
+    # networks:
+    #   - app-network
+    network_mode: host
     environment:
       - PUID=1000
       - PGID=1000
