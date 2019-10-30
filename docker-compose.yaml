@@ -54,6 +54,24 @@ services:
       # - /path for transcoding:/transcode
     restart: unless-stopped
 
+  zoneminder:
+    image: dlandon/zoneminder
+    container_name: zoneminder
+    network_mode: host
+    ports:
+      -9001:9000
+    environment:
+      - SHMEM="50%"
+      - PUID=99
+      - PGID=100
+      - INSTALL_HOOK=1
+      - INSTALL_FACE=1
+      - INSTALL_TINY_YOLO=1
+      - INSTALL_YOLO=1
+    volumes:
+      - /media/external_1TB/Zoneminder:/config:rw
+      - /media/external_1TB/Zoneminder/data:/var/cache/zoneminder:rw
+
 networks: 
   app-network:
     driver: bridge

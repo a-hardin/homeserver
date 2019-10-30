@@ -5,7 +5,9 @@ echo "Installing packages"
 echo "*********************"
 
 sudo apt-get update
-sudo apt-get install git nano composer htop
+sudo add-apt-repository ppa:stebbins/handbrake-releases
+sudo apt-get update
+sudo apt-get install git nano composer htop handbrake-cli
 sudo apt install docker.io docker-compose 
 
 echo "*********************"
@@ -33,6 +35,11 @@ echo "Restart docker containers on reboot"
 echo "*********************"
 (crontab -l 2>/dev/null; echo "@reboot /var/www/homeserver/system/reboot.sh") | crontab -
 
+echo "*********************"
+echo "Mount external drive"
+echo "*********************"
+# TODO : Mount for each extral drive and make names unique.
+sudo mount -t ntfs /dev/sdb1 /media/external_1TB
 
 echo "*********************"
 echo "Setup a static IP"
