@@ -59,7 +59,7 @@ services:
     container_name: zoneminder
     network_mode: host
     ports:
-      -9001:9000
+      - 9001:9000
     environment:
       - SHMEM="50%"
       - PUID=99
