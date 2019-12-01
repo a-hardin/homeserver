@@ -39,7 +39,16 @@ echo "*********************"
 echo "Mount external drive"
 echo "*********************"
 # TODO : Mount for each extral drive and make names unique.
-sudo mount -t ntfs /dev/sdb1 /media/external_1TB
+#  cd into /dev 
+#  then sudo fdisk -l
+# and do blkid for uuid 
+# 2tb example
+# sudo mount -t ext4 /dev/sdd1 /media/external_1
+# determine if there is a extral storage and mount it so it remains on reboot
+# using /etc/fstab
+# adding the following entry:
+# UUID=<uuid from blkid> /media/external_1 ext4 defaults 0 0
+# sudo mount -t ntfs /dev/sdb1 /media/external_1TB
 
 echo "*********************"
 echo "Setup a static IP"
@@ -51,6 +60,7 @@ sudo netplan apply
 echo "*********************"
 echo "Setup env file"
 echo "*********************"
+# Use values from docker-compose ENV vars or use random
 sudo touch .env
 MYSQL_ROOT_PASSWORD=MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 MYSQL_PASSWORD=MYSQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)

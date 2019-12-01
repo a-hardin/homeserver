@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Preferences 
+OldestPreviousVersion="1.16.5.1488-deeb86e7f" 
+MachineIdentifier="45e6653b-8aaa-4a86-ae6f-c2a4303e593c" 
+ProcessedMachineIdentifier="d4e58899f0b20a59eefe34f612563fb0704f105f" 
+AnonymousMachineIdentifier="eabfb109-1867-4c03-b0a2-1d38f03c66be" 
+MetricsEpoch="1" 
+AcceptedEULA="1" 
+PublishServerOnPlexOnlineKey="1" 
+PlexOnlineToken="oXnfo_GKtNKp7NzeRY8x" 
+PlexOnlineUsername="alan.e.hardin@gmail.com" 
+PlexOnlineMail="alan.e.hardin@gmail.com" 
+CertificateUUID="631612b03a11489aa2fb2d3decb0c9a2" 
+CertificateVersion="2" 
+PubSubServer="45.33.119.35" 
+PubSubServerRegion="dfw" 
+PubSubServerPing="45" 
+LanguageInCloud="1" 
+DlnaClientPreferences="IP=192.168.0.16,DirectPlay=true,DirectStream=true,LocalResolution=1920x1080,RemoteResolution=1920x1080,OnlineResolution=1920x1080,LocalVideoQuality=99,RemoteVideoQuality=99,OnlineVideoQuality=99,SubtitleSize=60,AudioBoost=100,MusicBitrate=320" 
+CloudSyncNeedsUpdate="0" 
+allowedNetworks="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5,192.168.0.6,192.168.0.7,192.168.0.8,192.168.0.9,192.168.0.10,192.168.0.11,192.168.0.12,192.168.0.13,192.168.0.14,192.168.0.15,192.168.0.16,192.168.0.17,192.168.0.18,192.168.0.19,192.168.0.20" 
+secureConnections="2" 
+customConnections="http://192.168.0.201:32400,https://192.168.0.201:32400,192.168.0.201:32400"/>

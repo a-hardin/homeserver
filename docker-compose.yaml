@@ -20,7 +20,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
 
-  app:
+  nextcloud:
     image: nextcloud
     container_name: nextcloud
     ports:
@@ -28,7 +28,8 @@ services:
     networks:
       - app-network
     volumes:
-      - ./nextcloud:/var/www/html/data:cached
+      # - ./nextcloud:/var/www/html/data:cached
+      - /media/external_1/nextcloud:/var/www/html/data:cached
     restart: always
 
   plex:
@@ -45,11 +46,14 @@ services:
       - VERSION=docker
       # - UMASK_SET=022 #optional
     volumes:
-      - ./plex/config:/config
-      - ./plex/mommy:/mommy
-      - /media/external_1TB/Plex/Movies:/movies
-      - /media/external_1TB/Plex/Daddy:/daddy
-      - /media/external_1TB/Plex/music:/music
+      # - ./system/plex/config:/config/Library/Application Support/Plex Media Server
+      # - ./plex/mommy:/mommy
+      - /media/external_1/Plex/Movies:/movies
+      - /media/external_1/Plex/Daddy:/daddy
+      - /media/external_1/Plex/Mommy:/mommy
+      - /media/external_1/Plex/Shiloh:/shiloh
+      # - /media/external_1/Plex/Story:/story
+      - /media/external_1/Plex/music:/music
       # - /media/<externalpath>:/<path>
       # - /path for transcoding:/transcode
     restart: unless-stopped
@@ -69,8 +73,8 @@ services:
       - INSTALL_TINY_YOLO=1
       - INSTALL_YOLO=1
     volumes:
-      - /media/external_1TB/Zoneminder:/config:rw
-      - /media/external_1TB/Zoneminder/data:/var/cache/zoneminder:rw
+      - /media/external_1/Zoneminder:/config:rw
+      - /media/external_1/Zoneminder/data:/var/cache/zoneminder:rw
 
 networks: 
   app-network:
