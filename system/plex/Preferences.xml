@@ -16,8 +16,8 @@ PubSubServer="45.33.119.35"
 PubSubServerRegion="dfw" 
 PubSubServerPing="45" 
 LanguageInCloud="1" 
-DlnaClientPreferences="IP=192.168.0.16,DirectPlay=true,DirectStream=true,LocalResolution=1920x1080,RemoteResolution=1920x1080,OnlineResolution=1920x1080,LocalVideoQuality=99,RemoteVideoQuality=99,OnlineVideoQuality=99,SubtitleSize=60,AudioBoost=100,MusicBitrate=320" 
+DlnaClientPreferences="IP=192.168.1.16,DirectPlay=true,DirectStream=true,LocalResolution=1920x1080,RemoteResolution=1920x1080,OnlineResolution=1920x1080,LocalVideoQuality=99,RemoteVideoQuality=99,OnlineVideoQuality=99,SubtitleSize=60,AudioBoost=100,MusicBitrate=320" 
 CloudSyncNeedsUpdate="0" 
-allowedNetworks="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5,192.168.0.6,192.168.0.7,192.168.0.8,192.168.0.9,192.168.0.10,192.168.0.11,192.168.0.12,192.168.0.13,192.168.0.14,192.168.0.15,192.168.0.16,192.168.0.17,192.168.0.18,192.168.0.19,192.168.0.20" 
+allowedNetworks="192.168.1.1,192.168.1.2,192.168.1.3,192.168.1.4,192.168.1.5,192.168.1.6,192.168.1.7,192.168.1.8,192.168.1.9,192.168.1.10,192.168.1.11,192.168.1.12,192.168.1.13,192.168.1.14,192.168.1.15,192.168.1.16,192.168.1.17,192.168.1.18,192.168.1.19,192.168.1.20" 
 secureConnections="2" 
-customConnections="http://192.168.0.201:32400,https://192.168.0.201:32400,192.168.0.201:32400"/>
+customConnections="http://192.168.1.201:32400,https://192.168.1.201:32400,192.168.1.201:32400"/>
