@@ -1,0 +1,35 @@
+to install go to http://192.168.1.201:8082
+
+filling the create an admin account section
+
+Let the data folder section alone
+
+on configure the database section select Mysql/MariaDB 
+for the input fields use the .env file to fill in:
+Database user       -> MYSQL_USER
+Database password   -> MYSQL_PASSWORD
+Database name       -> MYSQL_DATABASE
+Database host       -> db (this is the docker service name for your database)
+
+
+Let the install recommended apps checked
+
+If you need to move files over from existing user 
+if you have the folder (ex: Alan Phone)
+
+Solution 1
+
+create the new user as the previous system
+ex: old system user was alan, the new systems user should be alan 
+
+After the user is created copy the old folder into the new user's folder
+This can be done my going into the docker container and navigating to where
+you are storing nextclouds files. You will need root privilages do: sudo su 
+
+once the folder is copied over. In the nextcloud app create a new folder with
+name of the folder you just copied.
+
+You might need to refresh after creating the folder but you should have your files
+
+
+

@@ -1,0 +1,19 @@
+get into the docker container:
+sudo docker-compose exec db bin/bash
+
+Access mysql:
+mysql -u <user> -p
+ex:
+mysql -u lYwTUtjHThF8EBCwkjeB -p
+
+SHOW DATABASES;
+
+SHOW SCHEMAS;
+
+USE database_name;
+
+SHOW TABLES; 
+
+SHOW FULL TABLES;
+
+SHOW TABLES FROM database_name;
