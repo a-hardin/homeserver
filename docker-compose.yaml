@@ -5,6 +5,27 @@ version: '3'
 #   db:
 
 services:
+  guacamole:
+    image: guacamole/guacamole
+    container_name: guacamole
+    environment:
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: db
+      MYSQL_DATABASE: ${MYSQL_GUACAMOLE_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    depends_on:
+      - guacd
+      - db
+    ports:
+      - "8080:8080"
+    restart: always
+
+  guacd:
+    image: guacamole/guacd
+    container_name: guacd
+    restart: always
+  
   db:
     image: mariadb
     container_name: mysql
@@ -32,49 +53,87 @@ services:
       - /media/external_1/nextcloud:/var/www/html/data:cached
     restart: always
 
-  plex:
-    image: linuxserver/plex
-    container_name: plex
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
     ports:
-      - 32400:32400
-    # networks:
-    #   - app-network
-    network_mode: host
+      - 8096:8096
+    user: 1000:1000
+    network_mode: "host"
     environment:
       - PUID=1000
       - PGID=1000
-      - VERSION=docker
-      # - UMASK_SET=022 #optional
+      - TZ=America/Chicago
     volumes:
-      # - ./system/plex/config:/config/Library/Application Support/Plex Media Server
-      # - ./plex/mommy:/mommy
-      - /media/external_1/Plex/Movies:/movies
-      - /media/external_1/Plex/Daddy:/daddy
-      - /media/external_1/Plex/Mommy:/mommy
-      - /media/external_1/Plex/Shiloh:/shiloh
-      # - /media/external_1/Plex/Story:/story
-      - /media/external_1/Plex/music:/music
-      # - /media/<externalpath>:/<path>
-      # - /path for transcoding:/transcode
-    restart: unless-stopped
+      # - /path/to/config:/config
+      # - /path/to/cache:/cache
+      # - /path/to/media:/media
+      # - /path/to/media2:/media2:ro
+      # - /media/external_1/Plex/config:/config
+      - /media/external_1/Plex/jellycache:/cache
+      - /media/external_1/Plex/TV:/tv
+      - /media/external_1/Plex/Movies:/movies:ro
+      - /media/external_1/Plex/Daddy:/daddy:ro
+      - /media/external_1/Plex/Mommy:/mommy:ro
+      - /media/external_1/Plex/Shiloh:/shiloh:ro
+      - /media/external_1/Plex/Story:/story:ro
+      - /media/external_1/Plex/music:/music:ro
+    restart: "unless-stopped"
 
-  zoneminder:
-    image: dlandon/zoneminder
-    container_name: zoneminder
-    network_mode: host
-    ports:
-      - 9001:9000
-    environment:
-      - SHMEM="50%"
-      - PUID=99
-      - PGID=100
-      - INSTALL_HOOK=1
-      - INSTALL_FACE=1
-      - INSTALL_TINY_YOLO=1
-      - INSTALL_YOLO=1
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
     volumes:
-      - /media/external_1/Zoneminder:/config:rw
-      - /media/external_1/Zoneminder/data:/var/cache/zoneminder:rw
+      - ./system/mosquitto/config:/mosquitto/config
+      - ./system/mosquitto/data:/mosquitto/data
+      - ./system/mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
+      - 9001:9001
+
+  # plex:
+  #   image: linuxserver/plex
+  #   container_name: plex
+  #   ports:
+  #     - 32400:32400
+  #   # networks:
+  #   #   - app-network
+  #   network_mode: host
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - VERSION=docker
+  #     # - UMASK_SET=022 #optional
+  #   volumes:
+  #     # - ./system/plex/config:/config/Library/Application Support/Plex Media Server
+  #     # - ./plex/mommy:/mommy
+  #     - /media/external_1/Plex/Movies:/movies
+  #     - /media/external_1/Plex/Daddy:/daddy
+  #     - /media/external_1/Plex/Mommy:/mommy
+  #     - /media/external_1/Plex/Shiloh:/shiloh
+  #     # - /media/external_1/Plex/Story:/story
+  #     - /media/external_1/Plex/music:/music
+  #     # - /media/<externalpath>:/<path>
+  #     # - /path for transcoding:/transcode
+  #   restart: unless-stopped
+
+  # zoneminder:
+  #   image: dlandon/zoneminder
+  #   container_name: zoneminder
+  #   network_mode: host
+  #   ports:
+  #     - 9001:9000
+  #   environment:
+  #     - SHMEM="50%"
+  #     - PUID=99
+  #     - PGID=100
+  #     - INSTALL_HOOK=1
+  #     - INSTALL_FACE=1
+  #     - INSTALL_TINY_YOLO=1
+  #     - INSTALL_YOLO=1
+  #   volumes:
+  #     - /media/external_1/Zoneminder:/config:rw
+  #     - /media/external_1/Zoneminder/data:/var/cache/zoneminder:rw
 
 networks: 
   app-network:
