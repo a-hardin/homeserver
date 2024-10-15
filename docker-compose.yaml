@@ -20,11 +20,15 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    networks:
+      - app-network
 
   guacd:
     image: guacamole/guacd
     container_name: guacd
     restart: always
+    networks:
+      - app-network
   
   db:
     image: mariadb
