@@ -11,8 +11,8 @@ services:
     environment:
       GUACD_HOSTNAME: guacd
       MYSQL_HOSTNAME: db
-      MYSQL_DATABASE: ${MYSQL_GUACAMOLE_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guacamole_user
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - guacd
