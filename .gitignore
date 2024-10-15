@@ -3,3 +3,5 @@
 /node_modules
 /.vagrant
 composer.lock
+/homeassistant
+/system/mosquitto
