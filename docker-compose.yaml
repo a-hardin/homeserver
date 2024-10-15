@@ -35,8 +35,8 @@ services:
     container_name: mysql
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
-    # volumes:
-    #   - db:/var/lib/mysql
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
     networks:
       - app-network
     environment:
