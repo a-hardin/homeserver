@@ -36,7 +36,8 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./system/db:/docker-entrypoint-initdb.d
+      - ./system/db:/home
     networks:
       - app-network
     environment:
