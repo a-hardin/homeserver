@@ -102,3 +102,22 @@ sudo mount -a
 Verify:
 
 df -hT | grep media
+
+
+
+### Docker
+#### stop all containers, delete all containers, then delete all images
+docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && docker rmi -f $(docker images -aq)
+
+
+## Nextcloud
+user is db user not root
+password is db pass not root pass
+
+
+create a new user like alanh and sym link it to alan directory
+docker exec -it nextclound /bin/bash
+ln -s /var/www/html/alan/ /var/www/html/alanh
+
+then scan folders so the database will recognize them 
+/var/www/html# php occ files:scan --all

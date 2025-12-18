@@ -133,8 +133,6 @@ services:
       - lan
       - internal
     volumes:
-      # - ./nextcloud:/var/www/html/data:cached
-      # - /media/external_1/nextcloud:/var/www/html/data:cached
       - /media/data_ssd/nextcloud:/var/www/html/data:cached
     restart: unless-stopped
 
@@ -202,6 +200,37 @@ services:
     ports:
       - "32320:32320"
       # - "127.0.0.1:32320:32320"
+    networks:
+      - vpn
+      - lan
+    restart: unless-stopped
+
+# ----------------------------
+# WATCHTOWER (CONTROLLED UPDATES)
+# ----------------------------
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *" # daily at 4am
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+    restart: unless-stopped
+
+# ----------------------------
+# PORTAINER (VPN + LAN ONLY)
+# ----------------------------
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./system/portainer:/data
+    ports:
+      - "127.0.0.1:9000:9000"
     networks:
       - vpn
       - lan
