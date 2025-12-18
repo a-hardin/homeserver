@@ -134,7 +134,8 @@ services:
       - internal
     volumes:
       # - ./nextcloud:/var/www/html/data:cached
-      - /media/external_1/nextcloud:/var/www/html/data:cached
+      # - /media/external_1/nextcloud:/var/www/html/data:cached
+      - /media/data_ssd/nextcloud:/var/www/html/data:cached
     restart: unless-stopped
 
 # ----------------------------
@@ -162,14 +163,14 @@ services:
       # - /path/to/media:/media
       # - /path/to/media2:/media2:ro
       # - /media/external_1/Plex/config:/config
-      - /media/external_1/Plex/jellycache:/cache
-      - /media/external_1/Plex/TV:/tv
-      - /media/external_1/Plex/Movies:/movies:ro
-      - /media/external_1/Plex/Daddy:/daddy:ro
-      - /media/external_1/Plex/Mommy:/mommy:ro
-      - /media/external_1/Plex/Shiloh:/shiloh:ro
-      - /media/external_1/Plex/Story:/story:ro
-      - /media/external_1/Plex/music:/music:ro
+      - /media/data_ssd/Plex/jellycache:/cache
+      - /media/data_ssd/Plex/TV:/tv
+      - /media/data_ssd/Plex/Movies:/movies:ro
+      - /media/data_ssd/Plex/Daddy:/daddy:ro
+      - /media/data_ssd/Plex/Mommy:/mommy:ro
+      - /media/data_ssd/Plex/Shiloh:/shiloh:ro
+      - /media/data_ssd/Plex/Story:/story:ro
+      - /media/data_ssd/Plex/music:/music:ro
     restart: unless-stopped
 
 # ----------------------------
