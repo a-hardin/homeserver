@@ -35,20 +35,22 @@ services:
       PUID: 1000
       PGID: 1000
       TZ: America/Chicago
-      SERVERURL: vps.yourdomain.com
-      SERVERPORT: 51820
-      PEERS: home
-      PEERDNS: auto
-      INTERNAL_SUBNET: 10.13.13.0
+      # SERVERURL: vps.yourdomain.com
+      # SERVERPORT: 51820
+      # PEERS: home
+      # PEERDNS: auto
+      # INTERNAL_SUBNET: 10.13.13.0
     volumes:
       - ./system/wireguard:/config
-      - /lib/modules:/lib/modules
-    ports:
-      - "51820:51820/udp"
+      - /lib/modules:/lib/modules:ro
+      # - /lib/modules:/lib/modules
+    # ports:
+    #   - "51820:51820/udp"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    networks:
-      - vpn
+    # networks:
+    #   - vpn
+    network_mode: host
     restart: unless-stopped
 
 
@@ -194,31 +196,31 @@ services:
 # ----------------------------
 # FALCON PLAYER / XLIGHTS (VPN + LAN ONLY)
 # ----------------------------
-  falcon:
-    image: falconchristmas/fpp
-    container_name: falcon-player
-    ports:
-      - "32320:32320"
-      # - "127.0.0.1:32320:32320"
-    networks:
-      - vpn
-      - lan
-    restart: unless-stopped
+  # falcon:
+  #   image: falconchristmas/fpp
+  #   container_name: falcon-player
+  #   ports:
+  #     - "32320:32320"
+  #     # - "127.0.0.1:32320:32320"
+  #   networks:
+  #     - vpn
+  #     - lan
+  #   restart: unless-stopped
 
 # ----------------------------
 # WATCHTOWER (CONTROLLED UPDATES)
 # ----------------------------
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      WATCHTOWER_LABEL_ENABLE: "true"
-      WATCHTOWER_SCHEDULE: "0 0 4 * * *" # daily at 4am
-      WATCHTOWER_CLEANUP: "true"
-      WATCHTOWER_INCLUDE_RESTARTING: "true"
-    restart: unless-stopped
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   container_name: watchtower
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     WATCHTOWER_LABEL_ENABLE: "true"
+  #     WATCHTOWER_SCHEDULE: "0 0 4 * * *" # daily at 4am
+  #     WATCHTOWER_CLEANUP: "true"
+  #     WATCHTOWER_INCLUDE_RESTARTING: "true"
+  #   restart: unless-stopped
 
 # ----------------------------
 # PORTAINER (VPN + LAN ONLY)

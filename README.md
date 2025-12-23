@@ -104,6 +104,32 @@ Verify:
 df -hT | grep media
 
 
+### Back up storage device
+
+#### Confirm Main Drive Is Mounted
+Verify the main drive is mounted:
+df -h /media/data_ssd
+
+#### Plug In the Backup Drive
+Plug in the backup USB drive and confirm it mounted correctly:
+lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT,LABEL
+
+#### Final Sanity Check (Critical)
+ls /media/data_ssd
+ls /media/external_1
+
+#### Dry Run (Required)
+sudo rsync -avh --progress --delete --dry-run /media/data_ssd/ /media/external_1/
+
+#### Run the Real Mirror Backup
+sudo rsync -avh --progress --delete /media/data_ssd/ /media/external_1/
+
+#### Verify the Mirror
+ls /media/external_1
+sudo rsync -avh --dry-run /media/data_ssd/ /media/external_1/
+
+#### Safely Unmount the Backup Drive
+sudo umount /media/external_1
 
 ### Docker
 #### stop all containers, delete all containers, then delete all images
@@ -117,7 +143,10 @@ password is db pass not root pass
 
 create a new user like alanh and sym link it to alan directory
 docker exec -it nextclound /bin/bash
+remove newly created user folder
+rm -R alanh/
 ln -s /var/www/html/alan/ /var/www/html/alanh
+chown -h www-data:www-data alanh
 
 then scan folders so the database will recognize them 
 /var/www/html# php occ files:scan --all
