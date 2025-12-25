@@ -8,6 +8,11 @@
 
 
 networks:
+  wg_bridge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.13.13.0/24
   lan:
     driver: bridge
   vpn:
@@ -30,7 +35,7 @@ services:
     container_name: wireguard
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
+      # - SYS_MODULE
     environment:
       PUID: 1000
       PGID: 1000
@@ -42,15 +47,17 @@ services:
       # INTERNAL_SUBNET: 10.13.13.0
     volumes:
       - ./system/wireguard:/config
-      - /lib/modules:/lib/modules:ro
+      # - /lib/modules:/lib/modules:ro
       # - /lib/modules:/lib/modules
     # ports:
     #   - "51820:51820/udp"
     # sysctls:
     #   - net.ipv4.conf.all.src_valid_mark=1
-    # networks:
+    networks:
+      wg_bridge:
+        ipv4_address: 10.13.13.2
     #   - vpn
-    network_mode: host
+    # network_mode: host
     restart: unless-stopped
 
 
