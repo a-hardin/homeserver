@@ -1,0 +1,12 @@
+[Unit]
+Description=WireGuard to Docker routing rules
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/wg-docker-routing.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -150,3 +150,13 @@ chown -h www-data:www-data alanh
 
 then scan folders so the database will recognize them 
 /var/www/html# php occ files:scan --all
+
+
+## Networking
+run wg-docker-routing.sh file on the host machine
+
+make sure system\networking\wg-docker-routing.service is placed in /etc/systemd/system/wg-docker-routing.service
+
+run 
+sudo systemctl daemon-reload
+sudo systemctl enable wg-docker-routing
