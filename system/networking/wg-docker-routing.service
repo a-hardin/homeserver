@@ -2,11 +2,18 @@
 Description=WireGuard to Docker routing rules
 After=network-online.target docker.service
 Wants=network-online.target
+# Wait a bit after Docker starts
+After=docker.service
 
 [Service]
 Type=oneshot
+# Give Docker time to create networks
+ExecStartPre=/bin/sleep 10
 ExecStart=/usr/local/sbin/wg-docker-routing.sh
 RemainAfterExit=yes
+# If it fails, retry
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
