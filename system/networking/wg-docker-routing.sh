@@ -9,21 +9,50 @@ WIREGUARD_CONTAINER_IP="10.20.20.2"
 
 # Find the bridge interface name dynamically
 get_bridge_interface() {
+  local network_name=""
+  
+  # Check for network with and without compose project prefix
+  if docker network inspect homeserver_wg_bridge >/dev/null 2>&1; then
+    network_name="homeserver_wg_bridge"
+  elif docker network inspect wg_bridge >/dev/null 2>&1; then
+    network_name="wg_bridge"
+  else
+    echo "ERROR: Cannot find wg_bridge Docker network. Checked: wg_bridge, homeserver_wg_bridge" >&2
+    echo "Available networks:" >&2
+    docker network ls >&2
+    exit 1
+  fi
+  
   # Try to get custom bridge name first
-  local bridge=$(docker network inspect wg_bridge --format '{{index .Options "com.docker.network.bridge.name"}}' 2>/dev/null)
+  local bridge=$(docker network inspect "$network_name" --format '{{index .Options "com.docker.network.bridge.name"}}' 2>/dev/null)
   
   # If no custom name, get the auto-generated br-XXXX name
   if [ -z "$bridge" ]; then
-    local net_id=$(docker network inspect wg_bridge --format '{{.Id}}' | cut -c1-12)
+    local net_id=$(docker network inspect "$network_name" --format '{{.Id}}' | cut -c1-12)
     bridge="br-${net_id}"
+  fi
+  
+  # Verify the interface actually exists
+  if ! ip link show "$bridge" >/dev/null 2>&1; then
+    echo "ERROR: Bridge interface $bridge does not exist" >&2
+    echo "Network $network_name found, but interface $bridge not present" >&2
+    echo "Available bridges:" >&2
+    ip link show type bridge >&2
+    exit 1
   fi
   
   echo "$bridge"
 }
 
+echo "[+] Checking Docker network..."
 BRIDGE_IFACE=$(get_bridge_interface)
-
 echo "[+] Using bridge interface: $BRIDGE_IFACE"
+
+# Verify WireGuard container is running
+if ! docker inspect wireguard >/dev/null 2>&1; then
+  echo "ERROR: WireGuard container is not running" >&2
+  exit 1
+fi
 
 # to find the docker network subnets
 # docker network inspect $(docker network ls -q) --format '{{.Name}} -> {{range .IPAM.Config}}{{.Subnet}}{{end}}'
@@ -49,12 +78,17 @@ fi
 echo "[+] Adding route: $WG_SUBNET via $WIREGUARD_CONTAINER_IP dev $BRIDGE_IFACE"
 
 # Remove old route if exists
-ip route del $WG_SUBNET 2>/dev/null && echo "    [i] Removed existing route" || true
+if ip route show | grep -q "$WG_SUBNET"; then
+  ip route del $WG_SUBNET 2>/dev/null && echo "    [i] Removed existing route" || true
+fi
 
 # Add route for VPN clients to go through WireGuard container
-ip route add $WG_SUBNET via $WIREGUARD_CONTAINER_IP dev $BRIDGE_IFACE
-
-echo "    [✓] Route added successfully"
+if ip route add $WG_SUBNET via $WIREGUARD_CONTAINER_IP dev $BRIDGE_IFACE; then
+  echo "    [✓] Route added successfully"
+else
+  echo "    [!] Failed to add route" >&2
+  exit 1
+fi
 
 ### IPTABLES FORWARD RULES ###
 echo "[+] Configuring FORWARD rules (subnet-based)"
