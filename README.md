@@ -154,7 +154,7 @@ then scan folders so the database will recognize them
 
 ## Networking
 make wg-docker-routing.sh executable
-chmod +x system/networking/wg-docker-routing.sh
+sudo chmod +x system/networking/wg-docker-routing.sh
 
 copy wg-docker-routing.sh to /usr/local/sbin/wg-docker-routing.sh
 sudo cp system/networking/wg-docker-routing.sh /usr/local/sbin/wg-docker-routing.sh
