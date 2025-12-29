@@ -49,17 +49,18 @@ for subnet in "${DOCKER_SUBNETS[@]}"; do
 done
 
 ### MSS CLAMPING (PREROUTING — REQUIRED) ###
-echo "[+] Applying TCP MSS clamping (PREROUTING)"
+# echo "[+] Applying TCP MSS clamping (PREROUTING)"
+echo "[!] TCP MSS clamping disabled (nftables compatibility)"
 
-iptables -t mangle -C PREROUTING -s "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
-  -j TCPMSS --clamp-mss-to-pmtu 2>/dev/null || \
-iptables -t mangle -A PREROUTING -s "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
-  -j TCPMSS --clamp-mss-to-pmtu
+# iptables -t mangle -C PREROUTING -s "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
+#   -j TCPMSS --clamp-mss-to-pmtu 2>/dev/null || \
+# iptables -t mangle -A PREROUTING -s "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
+#   -j TCPMSS --clamp-mss-to-pmtu
 
-iptables -t mangle -C PREROUTING -d "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
-  -j TCPMSS --clamp-mss-to-pmtu 2>/dev/null || \
-iptables -t mangle -A PREROUTING -d "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
-  -j TCPMSS --clamp-mss-to-pmtu
+# iptables -t mangle -C PREROUTING -d "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
+#   -j TCPMSS --clamp-mss-to-pmtu 2>/dev/null || \
+# iptables -t mangle -A PREROUTING -d "$WG_SUBNET" -p tcp --tcp-flags SYN,RST SYN \
+#   -j TCPMSS --clamp-mss-to-pmtu
 
 ### NAT FOR VPN → DOCKER ###
 echo "[+] Configuring NAT rules"
