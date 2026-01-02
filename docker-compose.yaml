@@ -143,6 +143,11 @@ services:
       - internal
     volumes:
       - /media/data_ssd/nextcloud:/var/www/html/data:cached
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 1073741824   # 1GB tmpfs for Recognize / ffmpeg
+          mode: 1777
     restart: unless-stopped
 
 # ----------------------------
