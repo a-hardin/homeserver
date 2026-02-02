@@ -168,3 +168,8 @@ sudo cp system/networking/wg-docker-routing.service /etc/systemd/system/wg-docke
 run 
 sudo systemctl daemon-reload
 sudo systemctl enable wg-docker-routing
+
+
+## Wireguard
+### Adding vpn entry
+This is done on the vps. A new peer needs to be added to the docker_composer.yaml file on the ovh-vps repo.
