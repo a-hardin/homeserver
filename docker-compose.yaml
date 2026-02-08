@@ -28,6 +28,8 @@ networks:
 volumes:
   db:
   nextcloud:
+  postgres_data:
+  n8n_data:
 
 services:
   wireguard:
@@ -127,6 +129,61 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
+  
+  postgres:
+    image: postgres:18-slim
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - TZ=America/Chicago
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"           # Access n8n at http://your-server-ip:5678
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_HOST=n8n
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL}                         # Change if reverse proxy
+      - GENERIC_TIMEZONE=America/Chicago                       # ← Your timezone
+      - TZ=America/Chicago
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}               # ← CHANGE THIS (generate a strong one)
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}             # ← Change username
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}     # ← CHANGE THIS
+      - NODE_ENV=production
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - vpn
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 # ----------------------------
 # NEXTCLOUD (VPN + LAN ONLY)
@@ -203,35 +260,6 @@ services:
       - 9001:9001
       # - "127.0.0.1:1883:1883"
       # - "127.0.0.1:9001:9001"
-
-# ----------------------------
-# FALCON PLAYER / XLIGHTS (VPN + LAN ONLY)
-# ----------------------------
-  # falcon:
-  #   image: falconchristmas/fpp
-  #   container_name: falcon-player
-  #   ports:
-  #     - "32320:32320"
-  #     # - "127.0.0.1:32320:32320"
-  #   networks:
-  #     - vpn
-  #     - lan
-  #   restart: unless-stopped
-
-# ----------------------------
-# WATCHTOWER (CONTROLLED UPDATES)
-# ----------------------------
-  # watchtower:
-  #   image: containrrr/watchtower
-  #   container_name: watchtower
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   environment:
-  #     WATCHTOWER_LABEL_ENABLE: "true"
-  #     WATCHTOWER_SCHEDULE: "0 0 4 * * *" # daily at 4am
-  #     WATCHTOWER_CLEANUP: "true"
-  #     WATCHTOWER_INCLUDE_RESTARTING: "true"
-  #   restart: unless-stopped
 
 # ----------------------------
 # PORTAINER (VPN + LAN ONLY)
