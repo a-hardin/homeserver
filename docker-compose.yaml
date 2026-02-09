@@ -292,7 +292,8 @@ services:
     container_name: activepieces
     restart: unless-stopped
     ports:
-      - "3000:3000"               # remove or change to 127.0.0.1:3000:3000 if you want only localhost
+      # - "3000:3000"
+      - "8081:80"
     environment:
       - AP_ENCRYPTION_KEY=${AP_ENCRYPTION_KEY}
       - AP_JWT_SECRET=${AP_JWT_SECRET}
