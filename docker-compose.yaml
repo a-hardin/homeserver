@@ -30,6 +30,8 @@ volumes:
   nextcloud:
   postgres_data:
   n8n_data:
+  activepieces_data:
+  redis_data:
 
 services:
   wireguard:
@@ -263,6 +265,60 @@ services:
       - 9001:9001
       # - "127.0.0.1:1883:1883"
       # - "127.0.0.1:9001:9001"
+
+
+# ----------------------------
+# Redis (VPN + LAN ONLY)
+# ----------------------------
+  redis:
+    image: redis:8.4-bookworm
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - redis_data:/data     # optional but recommended for persistence
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# ----------------------------
+# Redis (VPN + LAN ONLY)
+# ----------------------------
+  activepieces:
+    image: ghcr.io/activepieces/activepieces:latest   # or :0.x.y for pinning version
+    container_name: activepieces
+    restart: unless-stopped
+    ports:
+      - "3000:3000"               # remove or change to 127.0.0.1:3000:3000 if you want only localhost
+    environment:
+      - AP_ENCRYPTION_KEY=${AP_ENCRYPTION_KEY}
+      - AP_JWT_SECRET=${AP_JWT_SECRET}
+      - AP_FRONTEND_URL=${AP_FRONTEND_URL}
+      - AP_POSTGRES_DATABASE=${AP_POSTGRES_DATABASE}
+      - AP_POSTGRES_HOST=${AP_POSTGRES_HOST}
+      - AP_POSTGRES_PASSWORD=${AP_POSTGRES_PASSWORD}
+      - AP_POSTGRES_PORT=${AP_POSTGRES_PORT}
+      - AP_POSTGRES_USERNAME=${AP_POSTGRES_USERNAME}
+      - AP_REDIS_HOST=${AP_REDIS_HOST}
+      - AP_REDIS_PORT=${AP_REDIS_PORT}
+      # Optional tuning / security
+      - AP_EXECUTION_MODE=${AP_EXECUTION_MODE:-SANDBOXED}
+      - TZ=America/Chicago
+    volumes:
+      - activepieces_data:/root/.activepieces   # optional
+    networks:
+      - vpn
+      - lan
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 
 # ----------------------------
 # PORTAINER (VPN + LAN ONLY)
