@@ -288,7 +288,7 @@ services:
 # Redis (VPN + LAN ONLY)
 # ----------------------------
   activepieces:
-    image: ghcr.io/activepieces/activepieces:0.78.0   # or :0.x.y for pinning version
+    image: ghcr.io/activepieces/activepieces:0.76.0   # or :0.x.y for pinning version
     container_name: activepieces
     restart: unless-stopped
     ports:
