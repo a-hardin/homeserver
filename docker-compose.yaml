@@ -291,6 +291,7 @@ services:
     image: ghcr.io/activepieces/activepieces:0.75.0   # or :0.x.y for pinning version
     container_name: activepieces
     restart: unless-stopped
+    privileged: true
     ports:
       # - "3000:3000"
       - "8081:80"
@@ -306,7 +307,8 @@ services:
       - AP_REDIS_HOST=${AP_REDIS_HOST}
       - AP_REDIS_PORT=${AP_REDIS_PORT}
       # Optional tuning / security
-      - AP_EXECUTION_MODE=${AP_EXECUTION_MODE:-SANDBOXED}
+      - AP_EXECUTION_MODE=${AP_EXECUTION_MODE}
+      - AP_DEV_PIECES_SYNC_ON_START=true
       - TZ=America/Chicago
     volumes:
       - activepieces_data:/root/.activepieces   # optional
