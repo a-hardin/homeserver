@@ -168,9 +168,9 @@ services:
       - DB_POSTGRESDB_USER=${POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_POSTGRESDB_SSL=false
-      - N8N_HOST=n8n
+      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
       - N8N_PORT=5678
-      - N8N_PROTOCOL=http
+      - N8N_PROTOCOL=https
       - N8N_SECURE_COOKIE=false
       - WEBHOOK_URL=${N8N_WEBHOOK_URL}                         # Change if reverse proxy
       - GENERIC_TIMEZONE=America/Chicago                       # ← Your timezone
