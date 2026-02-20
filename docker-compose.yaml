@@ -198,16 +198,12 @@ services:
         condition: service_healthy
 
 # ----------------------------
-# OCR API (INTERNAL ONLY)
+# OCR (INTERNAL ONLY)
 # ----------------------------
-  ocr-api:
-    image: frooodle/s-pdf:latest
-    container_name: stirling-pdf
-    environment:
-      - DOCKER_ENABLE_SECURITY=false
-      - LANGS=eng
-    volumes:
-      - ./system/stirling-pdf/tessdata:/usr/share/tesseract-ocr/5/tessdata
+  ocrmypdf:
+    image: jbarlow83/ocrmypdf:latest
+    container_name: ocrmypdf
+    entrypoint: ["python", "webservice.py"]
     networks:
       - internal
     restart: unless-stopped
