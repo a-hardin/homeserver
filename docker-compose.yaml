@@ -204,6 +204,8 @@ services:
     image: jbarlow83/ocrmypdf:latest
     container_name: ocrmypdf
     entrypoint: ["python", "webservice.py"]
+    ports:
+      - "5000:5000"
     networks:
       - internal
     restart: unless-stopped
