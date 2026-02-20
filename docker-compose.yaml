@@ -132,6 +132,10 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
   
+
+# ----------------------------
+# Postgres (INTERNAL Only)
+# ----------------------------
   postgres:
     image: postgres:18-bookworm
     container_name: postgres
@@ -154,6 +158,9 @@ services:
       timeout: 5s
       retries: 5
 
+# ----------------------------
+# N8N (VPN and INTERNAL)
+# ----------------------------
   n8n:
     image: n8nio/n8n:latest
     container_name: n8n
@@ -189,6 +196,21 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+# ----------------------------
+# OCR API (INTERNAL ONLY)
+# ----------------------------
+  ocr-api:
+    image: frooodle/s-pdf:latest
+    container_name: stirling-pdf
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+      - LANGS=eng
+    volumes:
+      - ./system/stirling-pdf/tessdata:/usr/share/tesseract-ocr/5/tessdata
+    networks:
+      - internal
+    restart: unless-stopped
 
 # ----------------------------
 # NEXTCLOUD (VPN + LAN ONLY)
