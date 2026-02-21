@@ -198,14 +198,11 @@ services:
         condition: service_healthy
 
 # ----------------------------
-# OCR (INTERNAL ONLY)
+# OCR API (INTERNAL ONLY)
 # ----------------------------
-  ocrmypdf:
-    image: jbarlow83/ocrmypdf:latest
-    container_name: ocrmypdf
-    entrypoint: ["python", "webservice.py"]
-    ports:
-      - "5000:5000"
+  ocr-api:
+    build: ./system/ocr-api
+    container_name: ocr-api
     networks:
       - internal
     restart: unless-stopped
