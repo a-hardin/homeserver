@@ -198,6 +198,17 @@ services:
         condition: service_healthy
 
 # ----------------------------
+# TITLE EXAM (PUBLIC via VPS nginx)
+# ----------------------------
+  title-exam:
+    image: ghcr.io/${GITHUB_USERNAME}/title-exam-app:latest
+    container_name: title-exam
+    networks:
+      - public
+      - internal
+    restart: unless-stopped
+
+# ----------------------------
 # OCR API (INTERNAL ONLY)
 # ----------------------------
   ocr-api:
