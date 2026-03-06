@@ -203,6 +203,8 @@ services:
   title-exam:
     image: ghcr.io/${GITHUB_USERNAME}/title-exam-app:latest
     container_name: title-exam
+    env_file:
+      - ./system/title-exam/.env
     networks:
       - public
       - internal
