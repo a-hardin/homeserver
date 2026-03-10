@@ -74,6 +74,7 @@ services:
     volumes:
       - ./system/nginx/conf.d:/etc/nginx/conf.d:ro
       - ./system/nginx/certs:/etc/nginx/certs:ro
+      - ./system/streamline/public:/var/www/streamline:ro
     ports:
       - "80:80"
       - "443:443"
