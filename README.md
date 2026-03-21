@@ -202,6 +202,61 @@ To pull the latest changes for all submodules:
 git submodule update --remote --recursive
 ```
 
+## Troubleshooting
+
+### 502 Bad Gateway
+
+If a site is returning 502, work through these checks in order:
+
+#### 1. Check the VPS nginx error log
+```
+docker compose exec nginx cat /var/log/nginx/hardin-resources-error.log
+```
+If you see `connect() failed (111: Connection refused) while connecting to upstream: http://10.13.13.2:80` — the WireGuard tunnel is up but port 80/443 DNAT rules are missing inside the WireGuard container.
+
+#### 2. Verify the WireGuard tunnel is up
+From the VPS:
+```
+ping 10.13.13.2
+```
+If ping fails, the WireGuard tunnel is down. Restart the WireGuard container on the homeserver:
+```
+docker compose restart wireguard
+```
+
+#### 3. Check wg0.conf has the DNAT PostUp rules
+On the homeserver:
+```
+sudo cat /var/www/homeserver/system/wireguard/wg_confs/wg0.conf
+```
+The `[Interface]` section must include:
+```
+PostUp = iptables -t nat -A PREROUTING -i wg0 -p tcp --dport 80 -j DNAT --to-destination 10.20.20.1:80
+PostUp = iptables -t nat -A PREROUTING -i wg0 -p tcp --dport 443 -j DNAT --to-destination 10.20.20.1:443
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT
+
+PostDown = iptables -t nat -D PREROUTING -i wg0 -p tcp --dport 80 -j DNAT --to-destination 10.20.20.1:80
+PostDown = iptables -t nat -D PREROUTING -i wg0 -p tcp --dport 443 -j DNAT --to-destination 10.20.20.1:443
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT
+```
+If the rules are missing, add them and restart the WireGuard container.
+
+#### 4. Verify port 80 is reachable from the VPS
+```
+curl -v http://10.13.13.2:80
+```
+If still refused after confirming the PostUp rules are in place, restart the WireGuard container to re-apply them:
+```
+docker compose restart wireguard
+```
+
+#### 5. Confirm nginx is serving correctly on the homeserver
+```
+docker compose exec nginx nginx -t
+curl -v http://172.19.0.3
+```
+If nginx config has errors or curl fails, the issue is local to the homeserver nginx container.
+
 ## Wireguard
 ### Adding vpn entry
 This is done on the vps. A new peer needs to be added to the docker_composer.yaml file on the ovh-vps repo.
