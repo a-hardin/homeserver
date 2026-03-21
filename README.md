@@ -170,6 +170,38 @@ sudo systemctl daemon-reload
 sudo systemctl enable wg-docker-routing
 
 
+## Git Submodules
+
+### Adding a new submodule
+
+```
+git submodule add <repo-url> <path>
+```
+
+Example:
+```
+git submodule add https://github.com/a-hardin/hardin-resources system/hardin-resources
+```
+
+Then commit the changes:
+```
+git add .gitmodules <path>
+git commit -m "Add <name> as submodule"
+```
+
+### Initializing submodules on the server
+
+After cloning the repo or pulling changes that include new submodules, run:
+
+```
+git submodule update --init --recursive
+```
+
+To pull the latest changes for all submodules:
+```
+git submodule update --remote --recursive
+```
+
 ## Wireguard
 ### Adding vpn entry
 This is done on the vps. A new peer needs to be added to the docker_composer.yaml file on the ovh-vps repo.

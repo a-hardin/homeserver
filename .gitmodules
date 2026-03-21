@@ -1,3 +1,6 @@
 [submodule "system/streamline"]
 	path = system/streamline
 	url = https://github.com/a-hardin/hardin-streamline.git
+[submodule "system/hardin-resources"]
+	path = system/hardin-resources
+	url = https://github.com/a-hardin/hardin-resources

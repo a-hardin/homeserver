@@ -75,6 +75,7 @@ services:
       - ./system/nginx/conf.d:/etc/nginx/conf.d:ro
       - ./system/nginx/certs:/etc/nginx/certs:ro
       - ./system/streamline/public:/var/www/streamline:ro
+      - ./system/hardin-resources/public:/var/www/hardin-resources:ro
     ports:
       - "80:80"
       - "443:443"
