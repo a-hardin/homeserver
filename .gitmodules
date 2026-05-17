@@ -4,3 +4,6 @@
 [submodule "system/hardin-resources"]
 	path = system/hardin-resources
 	url = https://github.com/a-hardin/hardin-resources
+[submodule "system/tyler-storm"]
+	path = system/tyler-storm
+	url = https://github.com/a-hardin/tyler-storm.git

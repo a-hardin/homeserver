@@ -76,6 +76,7 @@ services:
       - ./system/nginx/certs:/etc/nginx/certs:ro
       - ./system/streamline/public:/var/www/streamline:ro
       - ./system/hardin-resources/public:/var/www/hardin-resources:ro
+      - ./system/tyler-storm/public:/var/www/tyler-storm:ro
     ports:
       - "80:80"
       - "443:443"
