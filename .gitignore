@@ -8,9 +8,8 @@ composer.lock
 
 # Hermes — real env files (never commit secrets)
 system/hermes/personal/.env
-system/hermes/business/.env
 system/hermes/family/.env
-system/hermes/friends/.env
+system/hermes/stonkbot/.env
 
 # Hermes — runtime data written by the agent into profile dirs
 system/hermes/*/memories/

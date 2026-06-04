@@ -383,6 +383,7 @@ services:
   hermes:
     build: ./system/hermes
     container_name: hermes
+    entrypoint: ["/start.sh"]
     volumes:
       - hermes_data:/opt/data
       - ./system/hermes/personal:/opt/data/profiles/personal
@@ -394,6 +395,7 @@ services:
       - "9122:9122"   # stonkbot dashboard
     environment:
       - TZ=America/Chicago
+      - HERMES_DASHBOARD=1
     networks:
       - vpn
       - internal
