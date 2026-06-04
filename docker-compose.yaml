@@ -32,6 +32,7 @@ volumes:
   n8n_data:
   activepieces_data:
   redis_data:
+  hermes_data:
 
 services:
   wireguard:
@@ -372,4 +373,28 @@ services:
     networks:
       - vpn
       - lan
+    restart: unless-stopped
+
+
+# ----------------------------
+# HERMES AGENT (VPN + INTERNAL)
+# Profiles: personal (9119), family (9121), stonkbot (9122)
+# ----------------------------
+  hermes:
+    build: ./system/hermes
+    container_name: hermes
+    volumes:
+      - hermes_data:/opt/data
+      - ./system/hermes/personal:/opt/data/profiles/personal
+      - ./system/hermes/family:/opt/data/profiles/family
+      - ./system/hermes/stonkbot:/opt/data/profiles/stonkbot
+    ports:
+      - "9119:9119"   # personal dashboard
+      - "9121:9121"   # family dashboard
+      - "9122:9122"   # stonkbot dashboard
+    environment:
+      - TZ=America/Chicago
+    networks:
+      - vpn
+      - internal
     restart: unless-stopped

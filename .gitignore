@@ -5,3 +5,18 @@
 composer.lock
 /homeassistant
 /system/mosquitto
+
+# Hermes — real env files (never commit secrets)
+system/hermes/personal/.env
+system/hermes/business/.env
+system/hermes/family/.env
+system/hermes/friends/.env
+
+# Hermes — runtime data written by the agent into profile dirs
+system/hermes/*/memories/
+system/hermes/*/sessions/
+system/hermes/*/logs/
+system/hermes/*/skills/
+system/hermes/*/state.db
+system/hermes/*/auth.json
+system/hermes/*/config.yaml
