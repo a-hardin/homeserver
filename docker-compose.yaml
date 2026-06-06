@@ -318,44 +318,6 @@ services:
       timeout: 5s
       retries: 5
 
-# ----------------------------
-# Redis (VPN + LAN ONLY)
-# ----------------------------
-  activepieces:
-    image: ghcr.io/activepieces/activepieces:0.75.0   # or :0.x.y for pinning version
-    container_name: activepieces
-    restart: unless-stopped
-    privileged: true
-    ports:
-      # - "3000:3000"
-      - "8081:80"
-    environment:
-      - AP_ENCRYPTION_KEY=${AP_ENCRYPTION_KEY}
-      - AP_JWT_SECRET=${AP_JWT_SECRET}
-      - AP_FRONTEND_URL=${AP_FRONTEND_URL}
-      - AP_POSTGRES_DATABASE=${AP_POSTGRES_DATABASE}
-      - AP_POSTGRES_HOST=${AP_POSTGRES_HOST}
-      - AP_POSTGRES_PASSWORD=${AP_POSTGRES_PASSWORD}
-      - AP_POSTGRES_PORT=${AP_POSTGRES_PORT}
-      - AP_POSTGRES_USERNAME=${AP_POSTGRES_USERNAME}
-      - AP_REDIS_HOST=${AP_REDIS_HOST}
-      - AP_REDIS_PORT=${AP_REDIS_PORT}
-      # Optional tuning / security
-      - AP_EXECUTION_MODE=${AP_EXECUTION_MODE}
-      - AP_DEV_PIECES_SYNC_ON_START=true
-      - TZ=America/Chicago
-    volumes:
-      - activepieces_data:/root/.activepieces   # optional
-      - ./cache:/usr/src/app/cache
-    networks:
-      - vpn
-      - lan
-      - internal
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
 
 
 # ----------------------------

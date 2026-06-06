@@ -27,6 +27,9 @@ docker exec wireguard wg show
 # Update all submodules to latest
 git submodule update --remote --recursive
 
+# Update a single submodule
+git submodule update --remote system/<site-name>
+
 # Initialize submodules after cloning
 git submodule update --init --recursive
 ```
