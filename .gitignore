@@ -11,6 +11,9 @@ system/hermes/personal/.env
 system/hermes/family/.env
 system/hermes/stonkbot/.env
 
+# Trader — real env file (Alpaca paper keys; never commit secrets)
+system/trader/.env
+
 # Hermes — runtime data written by the agent into profile dirs
 system/hermes/*/memories/
 system/hermes/*/sessions/

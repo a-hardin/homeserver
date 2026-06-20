@@ -33,6 +33,7 @@ volumes:
   activepieces_data:
   redis_data:
   hermes_data:
+  trader_state:
 
 services:
   wireguard:
@@ -215,6 +216,33 @@ services:
     restart: unless-stopped
 
 # ----------------------------
+# UMAMI ANALYTICS (PUBLIC via VPS nginx)
+# Privacy-friendly analytics for all sites. Reuses the shared postgres
+# instance (needs a dedicated `umami` DB + user — see README). nginx here
+# routes analytics.h4rdn.com -> umami:3000 by Host header.
+# ----------------------------
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami
+    environment:
+      - DATABASE_TYPE=postgresql
+      - DATABASE_URL=postgresql://${UMAMI_DB_USER}:${UMAMI_DB_PASSWORD}@postgres:5432/${UMAMI_DB_NAME}
+      - APP_SECRET=${UMAMI_APP_SECRET}
+      - TZ=America/Chicago
+    networks:
+      - public
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/heartbeat || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+# ----------------------------
 # OCR API (INTERNAL ONLY)
 # ----------------------------
   ocr-api:
@@ -362,4 +390,29 @@ services:
     networks:
       - vpn
       - internal
+    restart: unless-stopped
+
+# ----------------------------
+# ALPACA TRADER (INTERNAL ONLY)
+# Mechanical paper-trading service. Hermes (stonkbot) reaches it at
+# http://trader:8080 over the internal network. The control surface is
+# intentionally NOT published to host/LAN/VPN. Secrets live ONLY in this
+# container's .env -- never in Hermes, never in the image.
+# ----------------------------
+  trader:
+    image: ghcr.io/${GITHUB_USERNAME}/alpaca-trader:latest
+    container_name: trader
+    env_file:
+      - ./system/trader/.env        # Alpaca paper keys only (gitignored). No Discord here.
+    environment:
+      - TZ=America/New_York          # session logic is America/New_York; do not change
+    volumes:
+      - trader_state:/state          # persisted strategy state + audit log across restarts
+    networks:
+      - internal                     # container-to-container only; outbound NAT still works
+                                     #   (Alpaca API reaches the internet)
+    ports:
+      # Operator dashboard (LAN). The :8080 control API is deliberately NOT
+      # published -- only Hermes reaches it over the `internal` network.
+      - "8090:8090"
     restart: unless-stopped
