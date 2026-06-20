@@ -399,20 +399,20 @@ services:
 # intentionally NOT published to host/LAN/VPN. Secrets live ONLY in this
 # container's .env -- never in Hermes, never in the image.
 # ----------------------------
-  trader:
-    image: ghcr.io/${GITHUB_USERNAME}/alpaca-trader:latest
-    container_name: trader
-    env_file:
-      - ./system/trader/.env        # Alpaca paper keys only (gitignored). No Discord here.
-    environment:
-      - TZ=America/New_York          # session logic is America/New_York; do not change
-    volumes:
-      - trader_state:/state          # persisted strategy state + audit log across restarts
-    networks:
-      - internal                     # container-to-container only; outbound NAT still works
-                                     #   (Alpaca API reaches the internet)
-    ports:
-      # Operator dashboard (LAN). The :8080 control API is deliberately NOT
-      # published -- only Hermes reaches it over the `internal` network.
-      - "8090:8090"
-    restart: unless-stopped
+  # trader:
+  #   image: ghcr.io/${GITHUB_USERNAME}/alpaca-trader:latest
+  #   container_name: trader
+  #   env_file:
+  #     - ./system/trader/.env        # Alpaca paper keys only (gitignored). No Discord here.
+  #   environment:
+  #     - TZ=America/New_York          # session logic is America/New_York; do not change
+  #   volumes:
+  #     - trader_state:/state          # persisted strategy state + audit log across restarts
+  #   networks:
+  #     - internal                     # container-to-container only; outbound NAT still works
+  #                                    #   (Alpaca API reaches the internet)
+  #   ports:
+  #     # Operator dashboard (LAN). The :8080 control API is deliberately NOT
+  #     # published -- only Hermes reaches it over the `internal` network.
+  #     - "8090:8090"
+  #   restart: unless-stopped
