@@ -202,6 +202,10 @@ To pull the latest changes for all submodules:
 git submodule update --remote --recursive
 ```
 
+### Update a single submodule on the server
+
+git submodule update --remote system/<site-name>
+
 ## Troubleshooting
 
 ### 502 Bad Gateway

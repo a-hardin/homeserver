@@ -71,6 +71,7 @@ SSL terminates at the VPS. The homeserver nginx routes requests by `Host` header
 | mosquitto | 1883, 9001 | vpn, lan, internal |
 | portainer | 9000 | vpn, lan |
 | title-exam | — | public, internal |
+| docuseal | — | public, internal |
 | ocr-api | — | internal |
 | postgres | 5432 | internal |
 | db (mariadb) | — | internal |

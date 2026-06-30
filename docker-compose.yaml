@@ -34,6 +34,7 @@ volumes:
   redis_data:
   hermes_data:
   trader_state:
+  docuseal_data:
 
 services:
   wireguard:
@@ -240,6 +241,33 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+# ----------------------------
+# DOCUSEAL (PUBLIC via VPS nginx)
+# Self-hosted document e-signing. Reuses the shared postgres instance
+# (needs a dedicated `docuseal` DB + user — see README). Uploaded/signed
+# PDFs live on disk in the docuseal_data volume regardless of the DB.
+# nginx here routes ${DOCUSEAL_HOST} -> docuseal:3000 by Host header.
+# SMTP (signing-invite emails) is configured manually later.
+# ----------------------------
+  docuseal:
+    image: docuseal/docuseal:latest
+    container_name: docuseal
+    environment:
+      - DATABASE_URL=postgresql://${DOCUSEAL_DB_USER}:${DOCUSEAL_DB_PASSWORD}@postgres:5432/${DOCUSEAL_DB_NAME}
+      - SECRET_KEY_BASE=${DOCUSEAL_SECRET_KEY_BASE}
+      - HOST=${DOCUSEAL_HOST}
+      - FORCE_SSL=${DOCUSEAL_HOST}
+      - TZ=America/Chicago
+    volumes:
+      - docuseal_data:/data
+    networks:
+      - public
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
 # ----------------------------
