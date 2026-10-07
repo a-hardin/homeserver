@@ -1,0 +1,13 @@
+# Install: sudo cp /var/www/homeserver/system/systemd/homeserver-deploy.* /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now homeserver-deploy.timer
+[Unit]
+Description=Deploy homeserver from origin/master if there are new commits
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+# The repo on the server is owned by root. HOME lets git find root's credential helper
+# for the private static site submodules.
+Environment=HOME=/root
+ExecStart=/var/www/homeserver/scripts/deploy.sh
