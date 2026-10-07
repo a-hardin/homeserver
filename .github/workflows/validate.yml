@@ -1,0 +1,16 @@
+name: Validate
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+# Validation only, on GitHub's runners. Deploys are pull-based: the server polls
+# this repo with scripts/deploy.sh, so no self-hosted runner is attached to it.
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: sh scripts/ci-validate.sh
