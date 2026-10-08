@@ -14,11 +14,13 @@ system/hermes/stonkbot/.env
 # Trader — real env file (Alpaca paper keys; never commit secrets)
 system/trader/.env
 
-# Hermes — runtime data written by the agent into profile dirs
-system/hermes/*/memories/
-system/hermes/*/sessions/
-system/hermes/*/logs/
-system/hermes/*/skills/
-system/hermes/*/state.db
-system/hermes/*/auth.json
-system/hermes/*/config.yaml
+# Hermes — runtime data written by the agent into profile dirs.
+# Ignore everything in each profile except the two tracked files.
+system/hermes/*/*
+!system/hermes/*/.env.example
+!system/hermes/*/SOUL.md
+
+# Runtime data and secrets created on the server
+/cache/
+/system/portainer/
+/system/wireguard/
