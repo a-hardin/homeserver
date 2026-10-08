@@ -170,41 +170,43 @@ sudo systemctl daemon-reload
 sudo systemctl enable wg-docker-routing
 
 
-## Git Submodules
+## Deployment
 
-### Adding a new submodule
+Automatic. A push is live in about 5 minutes.
 
-```
-git submodule add <repo-url> <path>
-```
+- Push to a site repo: its GitHub Action commits the new submodule pointer here.
+- Push here (`master`): the server polls every 5 minutes and runs `scripts/deploy.sh` (pull, submodules, `docker compose up -d`, `nginx -t`, reload). Failed deploys retry.
 
-Example:
+On the server (repo is owned by root, use `sudo` for git):
 ```
-git submodule add https://github.com/a-hardin/hardin-resources system/hardin-resources
-```
-
-Then commit the changes:
-```
-git add .gitmodules <path>
-git commit -m "Add <name> as submodule"
+systemctl status homeserver-deploy.service         # last run
+journalctl -u homeserver-deploy -n 40 --no-pager   # logs
+sudo systemctl start homeserver-deploy.service     # deploy now
 ```
 
-### Initializing submodules on the server
-
-After cloning the repo or pulling changes that include new submodules, run:
-
+Install the timer (new server, or after editing the unit files):
 ```
-git submodule update --init --recursive
-```
-
-To pull the latest changes for all submodules:
-```
-git submodule update --remote --recursive
+sudo cp /var/www/homeserver/system/systemd/homeserver-deploy.* /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now homeserver-deploy.timer
 ```
 
-### Update a single submodule on the server
+Tokens (fine-grained, values shown only once):
+- Sites read-only (`Contents: Read-only` on the site repos): saved in `/root/.git-credentials` on the server.
+- Homeserver write (`Contents: Read and write` on `homeserver`): `HOMESERVER_TOKEN` secret in each site repo.
 
-git submodule update --remote system/<site-name>
+Before committing here: `git pull --ff-only && git submodule update`.
+
+### Adding a new private site
+
+1. GitHub: add the repo to the sites read-only token's repository list (do not regenerate).
+2. Here: `git submodule add https://github.com/a-hardin/<repo>.git system/<site>`
+3. Here: add `system/nginx/conf.d/<site>.conf` (copy `streamline.conf`).
+4. Here: add `- ./system/<site>/public:/var/www/<site>:ro` to the nginx volumes in `docker-compose.yaml`.
+5. Commit and push.
+6. Site repo: copy `.github/workflows/update-homeserver.yml` from another site; set the branch and `SUBMODULE_PATH`.
+7. Site repo: add the `HOMESERVER_TOKEN` secret, then push.
+8. `ovh-vps` repo: add the domain, certificate and server block.
 
 ## Troubleshooting
 

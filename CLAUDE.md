@@ -24,15 +24,25 @@ docker compose exec nginx nginx -t
 # Check WireGuard tunnel status
 docker exec wireguard wg show
 
-# Update all submodules to latest
-git submodule update --remote --recursive
+# Sync local repo and submodules before committing (site Actions commit to master)
+git pull --ff-only && git submodule update --init --recursive
 
-# Update a single submodule
-git submodule update --remote system/<site-name>
-
-# Initialize submodules after cloning
-git submodule update --init --recursive
+# On the server: last deploy result / logs / deploy now
+systemctl status homeserver-deploy.service
+journalctl -u homeserver-deploy -n 40 --no-pager
+sudo systemctl start homeserver-deploy.service
 ```
+
+## Deployment
+
+Automatic; never deploy by hand. A push is live in about 5 minutes.
+
+- Site repo push → its `update-homeserver.yml` Action commits the submodule pointer here (`HOMESERVER_TOKEN` secret).
+- Push to `master` here → `homeserver-deploy.timer` on the server runs `scripts/deploy.sh` every 5 minutes as root: ff-only pull, submodule update, `docker compose up -d`, `nginx -t`, reload. Failures retry.
+- `.github/workflows/validate.yml` only checks the compose file. No self-hosted runner (repo is public).
+- Server repo is root-owned; private sites are fetched with a read-only token in `/root/.git-credentials`.
+- Do not commit a modified `system/<site>` pointer unless intended.
+- Test on the server, not locally.
 
 ## Architecture
 
@@ -87,13 +97,7 @@ Three public static sites live as submodules, mounted into the nginx container a
 | `system/streamline` | TBD | `system/nginx/conf.d/streamline.conf` |
 | `system/tyler-storm` | tylerstormsoccer.com | `system/nginx/conf.d/tyler-storm.conf` |
 
-To add a new static site: add submodule → add nginx conf in `system/nginx/conf.d/` → add volume mount in `docker-compose.yaml` nginx service → `docker exec nginx nginx -s reload`.
-
-To deploy a static site update:
-```bash
-git submodule update --remote system/<site-name>
-docker exec nginx nginx -s reload
-```
+To add a new site, follow "Adding a new private site" in `README.md`. Site updates deploy on push to the site repo.
 
 ### Dynamic App — title-exam
 
