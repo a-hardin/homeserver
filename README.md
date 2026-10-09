@@ -7,7 +7,7 @@ docker exec -it mysql /bin/bash
 mysql -u root -p
 <enter root password>
 CREATE DATABASE guacamole_db;
-CREATE USER 'guacamole_user'@'%' IDENTIFIED BY 'mAXM2QuaTNKCmhDim9C6';
+CREATE USER 'guacamole_user'@'%' IDENTIFIED BY 'fakepassword';
 GRANT ALL PRIVILEGES ON guacamole_db.* TO 'guacamole_user'@'%';
 FLUSH PRIVILEGES;
 EXIT;
