@@ -266,3 +266,5 @@ If nginx config has errors or curl fails, the issue is local to the homeserver n
 ## Wireguard
 ### Adding vpn entry
 This is done on the vps. A new peer needs to be added to the docker_composer.yaml file on the ovh-vps repo.
+
+Deploy test
