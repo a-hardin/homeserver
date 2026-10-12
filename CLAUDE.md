@@ -73,7 +73,9 @@ SSL terminates at the VPS. The homeserver nginx routes requests by `Host` header
 |---------|------|---------|
 | wireguard | — | wg_bridge |
 | nginx | 80, 443 | public, internal |
-| nextcloud | 8082 | vpn, lan, internal |
+| immich-server | 2283 | vpn, lan, internal |
+| immich-machine-learning | — | internal |
+| immich-postgres | — | internal |
 | jellyfin | 8096 | vpn, lan, internal |
 | guacamole | 8080 | vpn, lan, internal |
 | n8n | 5678 | vpn, internal |

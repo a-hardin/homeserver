@@ -136,7 +136,17 @@ sudo umount /media/external_1
 docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && docker rmi -f $(docker images -aq)
 
 
+## Immich
+Replaces Nextcloud for photos, at http://192.168.4.201:2283. Before the first deploy, on the server:
+```
+sudo mkdir -p /media/data_ssd/immich/library /media/data_ssd/immich/postgres
+echo "IMMICH_DB_PASSWORD=$(openssl rand -hex 24)" | sudo tee -a /var/www/homeserver/.env
+```
+Nextcloud's files are mounted read-only at `/mnt/nextcloud`. To show them, add an external library per user in Administration → External Libraries with the path `/mnt/nextcloud/<user>/files`.
+
 ## Nextcloud
+Commented out of `docker-compose.yaml`; the container keeps running until `docker stop nextcloud`.
+
 user is db user not root
 password is db pass not root pass
 
@@ -266,5 +276,3 @@ If nginx config has errors or curl fails, the issue is local to the homeserver n
 ## Wireguard
 ### Adding vpn entry
 This is done on the vps. A new peer needs to be added to the docker_composer.yaml file on the ovh-vps repo.
-
-Deploy test

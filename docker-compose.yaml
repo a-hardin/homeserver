@@ -35,6 +35,7 @@ volumes:
   hermes_data:
   trader_state:
   docuseal_data:
+  immich_model_cache:
 
 services:
   wireguard:
@@ -281,24 +282,82 @@ services:
     restart: unless-stopped
 
 # ----------------------------
-# NEXTCLOUD (VPN + LAN ONLY)
+# NEXTCLOUD (VPN + LAN ONLY) -- replaced by Immich. The container and
+# its data stay on the server until removed by hand.
 # ----------------------------
-  nextcloud:
-    image: nextcloud
-    container_name: nextcloud
+  # nextcloud:
+  #   image: nextcloud
+  #   container_name: nextcloud
+  #   environment:
+  #     - PHP_MEMORY_LIMIT=2G
+  #   ports:
+  #     - 8082:80
+  #     # - "127.0.0.1:8082:80"
+  #   networks:
+  #     - vpn
+  #     - lan
+  #     - internal
+  #   volumes:
+  #     - /media/data_ssd/nextcloud:/var/www/html/data:cached
+  #   tmpfs:
+  #     - /tmp:rw,exec,nosuid,size=1g
+  #   restart: unless-stopped
+
+# ----------------------------
+# IMMICH (VPN + LAN ONLY)
+# Photos. Needs its own postgres (vector extension), so it does not use
+# the shared one. Library and DB live on /media/data_ssd so the USB mirror
+# covers them. Nextcloud's files are mounted read-only as an external library.
+# ----------------------------
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:v3
+    container_name: immich_server
     environment:
-      - PHP_MEMORY_LIMIT=2G
+      - DB_HOSTNAME=immich-postgres
+      - DB_USERNAME=immich
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
+      - DB_DATABASE_NAME=immich
+      - REDIS_HOSTNAME=redis
+      - TZ=America/Chicago
+    volumes:
+      - /media/data_ssd/immich/library:/data
+      - /media/data_ssd/nextcloud:/mnt/nextcloud:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
-      - 8082:80
-      # - "127.0.0.1:8082:80"
+      - "2283:2283"
     networks:
       - vpn
       - lan
       - internal
+    depends_on:
+      redis:
+        condition: service_healthy
+      immich-postgres:
+        condition: service_started
+    restart: unless-stopped
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:v3
+    container_name: immich_machine_learning
     volumes:
-      - /media/data_ssd/nextcloud:/var/www/html/data:cached
-    tmpfs:
-      - /tmp:rw,exec,nosuid,size=1g
+      - immich_model_cache:/cache
+    networks:
+      - internal
+    restart: unless-stopped
+
+  immich-postgres:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+    container_name: immich_postgres
+    environment:
+      - POSTGRES_USER=immich
+      - POSTGRES_PASSWORD=${IMMICH_DB_PASSWORD}
+      - POSTGRES_DB=immich
+      - POSTGRES_INITDB_ARGS=--data-checksums
+    volumes:
+      - /media/data_ssd/immich/postgres:/var/lib/postgresql/data
+    shm_size: 128mb
+    networks:
+      - internal
     restart: unless-stopped
 
 # ----------------------------

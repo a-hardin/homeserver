@@ -83,7 +83,9 @@ homeserver_internal
 |---------|-----------|---------|-------|
 | wireguard | — | wg_bridge (pinned 10.20.20.2) | Client mode, connects to VPS |
 | nginx | 80, 443 | public, internal | Future public sites |
-| nextcloud | 8082 | vpn, lan, internal | File sync — trusted_domains configured |
+| immich-server | 2283 | vpn, lan, internal | Photos — replaced nextcloud (8082) |
+| immich-machine-learning | — | internal | Immich search / face recognition |
+| immich-postgres | — | internal | Immich DB (vector extension) |
 | jellyfin | 8096 | vpn, lan, internal | Media server |
 | guacamole | 8080 | vpn, lan, internal | Requires /guacamole/ path |
 | guacd | — | internal | Guacamole backend — internal only |
